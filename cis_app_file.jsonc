@@ -1,0 +1,28 @@
+from flask import Flask, render_template, request
+import pandas as pd
+
+app = Flask(__name__)
+
+questions = ['Date: ', 'Name: ', 'Address: ', 'Phone number: ', 'E-Mail address: ', 'Brand Name or Model #: ', 'Password: ', 
+             'List items that you are dropping off other than your Laptop/Desktop(Accessories): ',
+             'Please explain the problem you are having with your Laptop / Desktop', 'Were you running any particular software when this problem occurred?:   ', 
+             'Did you add any new hardware when this problem occurred?:  ', 'Is the LCD Screen damaged? YES/NO:  ',
+             'Are there any missing keys? YES/NO: ', 'Plastic damaged or scratched? YES/NO:  ']
+
+List_of_Responses = []
+
+def ask_question():
+    qna = []
+    for qs in questions:
+        qna.append(request.form.get(qs, ''))  # Get input from the web form
+    List_of_Responses.append(qna)
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        ask_question()
+        return render_template('thankyou.html')  # Show a thank you page after form submission
+    return render_template('form.html', questions=questions)
+
+if __name__ == '__main__':
+    app.run(debug=True)
